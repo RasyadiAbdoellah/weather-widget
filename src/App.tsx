@@ -2,7 +2,7 @@ import React from "react";
 import "./App.less";
 
 import type { city, weather } from "./helpers/types";
-import WeatherIcon from "./components/WeatherIcon";
+import WeatherInfo from "./components/WeatherInfo";
 
 // hardcoded list of cities with lat/lon to reduce amt of API requests
 const cities: city[] = [
@@ -95,19 +95,25 @@ class App extends React.Component {
     const { data, activeCity, isLoading } = this.state;
     return (
       <div className="App">
-        <div className="">
+        <div className="city-select">
           {cities.map((city, i) => (
-            <button key={city.name} onClick={() => this.setActiveCity(i)}>{city.name}</button>
+            <button
+              key={city.name}
+              onClick={() => this.setActiveCity(i)}
+              className={`city-select__city${activeCity === i ? " active" : ""}`}
+            >
+              {city.name}
+            </button>
           ))}
         </div>
         <div className="weather">
           {isLoading && <div>loading...</div>}
           {!isLoading && data && (
             <>
-              <WeatherIcon weatherData={data.current} />
-              <div className="forecast">
-                {data?.forecast.map((day) => (
-                  <WeatherIcon weatherData={day} />
+              <WeatherInfo weatherData={data.current} />
+              <div className="weather__forecast">
+                {data?.forecast.map((day, i) => (
+                  <WeatherInfo key={`${i}_${day.dt_txt}`} weatherData={day} isForecast/>
                 ))}
               </div>
             </>

@@ -8,7 +8,7 @@ export type weather = {
   dt: number;
   dt_txt: string;
   main: {
-    temp: string;
+    temp: number;
     [key: string]: string | number;
   };
   weather: {

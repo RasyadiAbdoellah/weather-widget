@@ -1,0 +1,21 @@
+.weather-info {
+  &--current {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .day {
+      grid-column: span 2;
+    }
+    .icon {
+      justify-self: end;
+      width: 3rem;
+      aspect-ratio: 1;
+    }
+    .temp {
+      justify-self: start;
+    }
+    .description {
+      display: block;
+    }
+  }
+}
