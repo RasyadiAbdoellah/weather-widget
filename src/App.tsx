@@ -23,6 +23,8 @@ const cities: city[] = [
   },
 ];
 
+const key = import.meta.env.VITE_API_KEY
+
 type parsedData = {
   current: weather;
   forecast: weather[];
@@ -32,6 +34,7 @@ type appState = {
   data: parsedData | null;
   activeCity: number;
   isLoading: boolean;
+  error?: string;
 };
 
 // App is written as a class component to meet task requirements
@@ -40,10 +43,11 @@ class App extends React.Component {
     data: null,
     activeCity: 0,
     isLoading: true,
+    error: "",
   };
 
   setData = (data: any) => {
-    this.setState((current) => ({ ...current, data }));
+    this.setState((current) => ({ ...current, data, isLoading: false }));
   };
 
   setLoading = (val: boolean) => {
@@ -54,27 +58,57 @@ class App extends React.Component {
     this.setState((current) => ({ ...current, activeCity: val }));
   };
 
-  fetchData = () => {
-    const { activeCity } = this.state;
+  setError = (val: string) => {
+    this.setState((current) => ({ ...current, error: val, isLoading: false }));
+  };
+
+  fetchDataWithLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          this.fetchData({
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+          });
+        },
+        (error) => {
+          this.setError("Unable to get location. Please check your browser and OS permissions");
+        }
+      );
+    }
+  };
+
+  fetchData = async (loc: null | { lat: number; lon: number } = null) => {
+    let lat = loc?.lat || cities[this.state.activeCity]?.lat;
+    let lon = loc?.lon || cities[this.state.activeCity]?.lon;
+    let response
     this.setLoading(true);
-    fetch(
-      `http://api.openweathermap.org/data/2.5/forecast?lat=${cities[activeCity].lat}&lon=${cities[activeCity].lon}&units=metric&appid=271da6b323b05ebaf2b4aaa0f3378f89`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        const { list } = data;
-        /**
-         * Transform response data to just the data we want.
-         * API returns the 5 day forecast in 3 hour intervals with the 0th index being the current weather.
-         * 24/3 = 8 so the 8th index is +24 hours, the 16 index is +48 hours, etc.
-         * We only need up to +96 hours or the 32nd index.
-         */
-        this.setData({
-          current: list[0],
-          forecast: [list[8], list[16], list[24], list[32]],
-        });
-        this.setLoading(false);
+
+    try {
+      response = await fetch(
+        `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${key}`
+      )
+    } catch(error) {
+      console.error(error);
+      this.setError(`Connection error occured.`)
+    }
+
+    if(response?.ok) {
+      const { list } = await response.json()
+      /**
+       * Transform response data to just the data we want.
+       * API returns the 5 day forecast in 3 hour intervals with the 0th index being the current weather.
+       * 24/3 = 8 so the 8th index is +24 hours, the 16 index is +48 hours, etc.
+       * We only need up to +96 hours or the 32nd index.
+       */
+      this.setData({
+        current: list[0],
+        forecast: [list[8], list[16], list[24], list[32]],
       });
+    } else {
+      this.setError(`Problem connecting to API. Please try again later`)
+      console.error(response)
+    }
   };
 
   componentDidMount(): void {
@@ -87,12 +121,15 @@ class App extends React.Component {
     snapshot?: any
   ): void {
     if (prevState.activeCity !== this.state.activeCity) {
-      this.fetchData();
+      this.state.activeCity === -1
+        ? this.fetchDataWithLocation()
+        : this.fetchData();
     }
   }
 
   render() {
-    const { data, activeCity, isLoading } = this.state;
+    const { data, activeCity, isLoading, error } = this.state;
+    const valid = !isLoading && data && !error;
     return (
       <div className="App">
         <div className="city-select">
@@ -100,20 +137,37 @@ class App extends React.Component {
             <button
               key={city.name}
               onClick={() => this.setActiveCity(i)}
-              className={`city-select__city${activeCity === i ? " active" : ""}`}
+              className={`city-select__city${
+                activeCity === i ? " active" : ""
+              }`}
             >
               {city.name}
             </button>
           ))}
+          <button 
+            onClick={() => {
+              this.setActiveCity(-1) // setActive to -1 to denote going outside of cities list
+            }}
+            className={`city-select__city${
+              activeCity === -1 ? " active" : ""
+            }`}
+            >
+            Current Location
+          </button>
         </div>
         <div className="weather">
           {isLoading && <div>loading...</div>}
-          {!isLoading && data && (
+          {!isLoading && error && <div>{error}</div>}
+          {valid && (
             <>
               <WeatherInfo weatherData={data.current} />
               <div className="weather__forecast">
                 {data?.forecast.map((day, i) => (
-                  <WeatherInfo key={`${i}_${day.dt_txt}`} weatherData={day} isForecast/>
+                  <WeatherInfo
+                    key={`${i}_${day.dt_txt}`}
+                    weatherData={day}
+                    isForecast
+                  />
                 ))}
               </div>
             </>

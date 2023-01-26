@@ -1,4 +1,8 @@
 .weather-info {
+  .icon {
+    width: 5rem;
+    aspect-ratio: 1;
+  }
   &--current {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -8,11 +12,12 @@
     }
     .icon {
       justify-self: end;
-      width: 3rem;
-      aspect-ratio: 1;
+      width: 10rem;
+
     }
     .temp {
       justify-self: start;
+      align-self: center;
     }
     .description {
       display: block;

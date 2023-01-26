@@ -216,6 +216,10 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
+"@bybas/weather-icons@https://github.com/basmilius/weather-icons":
+  version "3.0.0"
+  resolved "https://github.com/basmilius/weather-icons#87a143a3ca6a50d8e9cbd0f38eb3f31d7cf48053"
+
 "@esbuild/android-arm64@0.16.17":
   version "0.16.17"
   resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.16.17.tgz#cf91e86df127aa3d141744edafcba0abdc577d23"
