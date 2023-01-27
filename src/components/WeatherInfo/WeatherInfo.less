@@ -1,26 +1,51 @@
 .weather-info {
+  flex-grow: 1;
+  .day {
+    font-size: 1.25rem;
+    font-weight: 300;
+  }
   .icon {
-    width: 5rem;
+    width: 3rem;
     aspect-ratio: 1;
   }
+  .temp {
+    p {
+      margin: 0;
+    }
+    .value {
+      font-family: 'Teko', sans-serif;
+      font-size: 2rem;
+      line-height: 85%;
+    }
+
+  }
+
   &--current {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
 
     .day {
       grid-column: span 2;
+      text-align: center;
     }
     .icon {
       justify-self: end;
-      width: 10rem;
+      width: 6rem;
 
     }
     .temp {
       justify-self: start;
       align-self: center;
-    }
-    .description {
-      display: block;
+      
+      .value {
+        font-size: 3rem;
+      }
+      .description {
+        display: block;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.25rem;
+      }
     }
   }
 }

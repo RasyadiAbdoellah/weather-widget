@@ -8,7 +8,7 @@ type props = {
 };
 
 const WeatherInfo = ({ weatherData, isForecast = false }: props) => {
-  const date = new Date(weatherData.dt_txt);
+  const date = new Date(weatherData.dt * 1000); //dt is unix time in seconds, * 1000 to convert to milliseconds
   const today = new Date(Date.now());
   const conditions = weatherData.weather[0]
   // replace current day with Today
@@ -23,17 +23,20 @@ const WeatherInfo = ({ weatherData, isForecast = false }: props) => {
         isForecast ? "weather-info--forecast" : "weather-info--current"
       }`}
     >
-      <p className="day">{day}</p>
+      <h1 className="day">{day}</h1>
       <img
         className="icon"
         src={iconMap[conditions.icon]}
       />
-      <p className="temp">
-        {Math.floor(weatherData.main.temp)}°
+      <div className="temp">
+        <p className="value">
+          {Math.floor(weatherData.main.temp)}°
+        </p>
         {!isForecast && (
-          <span className="description">{conditions.main}</span>
+          <p className="description">{conditions.main}</p>
         )}
-      </p>
+
+      </div>
     </div>
   );
 };

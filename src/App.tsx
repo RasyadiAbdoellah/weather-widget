@@ -3,6 +3,7 @@ import "./App.less";
 
 import type { city, weather } from "./helpers/types";
 import WeatherInfo from "./components/WeatherInfo";
+import CityButton from "./components/CityButton";
 
 // hardcoded list of cities with lat/lon to reduce amt of API requests
 const cities: city[] = [
@@ -23,7 +24,7 @@ const cities: city[] = [
   },
 ];
 
-const key = import.meta.env.VITE_API_KEY
+const key = import.meta.env.VITE_API_KEY;
 
 type parsedData = {
   current: weather;
@@ -72,29 +73,33 @@ class App extends React.Component {
           });
         },
         (error) => {
-          this.setError("Unable to get location. Please check your browser and OS permissions");
+          this.setError(
+            "Unable to get location. Please check your browser and OS permissions"
+          );
         }
       );
     }
   };
 
   fetchData = async (loc: null | { lat: number; lon: number } = null) => {
+    this.setError("");
+
     let lat = loc?.lat || cities[this.state.activeCity]?.lat;
     let lon = loc?.lon || cities[this.state.activeCity]?.lon;
-    let response
+    let response;
     this.setLoading(true);
 
     try {
       response = await fetch(
         `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${key}`
-      )
-    } catch(error) {
+      );
+    } catch (error) {
       console.error(error);
-      this.setError(`Connection error occured.`)
+      this.setError(`Connection error occured.`);
     }
 
-    if(response?.ok) {
-      const { list } = await response.json()
+    if (response?.ok) {
+      const { list } = await response.json();
       /**
        * Transform response data to just the data we want.
        * API returns the 5 day forecast in 3 hour intervals with the 0th index being the current weather.
@@ -106,8 +111,8 @@ class App extends React.Component {
         forecast: [list[8], list[16], list[24], list[32]],
       });
     } else {
-      this.setError(`Problem connecting to API. Please try again later`)
-      console.error(response)
+      this.setError(`Problem connecting to API. Please try again later`);
+      console.error(response);
     }
   };
 
@@ -134,17 +139,15 @@ class App extends React.Component {
       <div className="App">
         <div className="city-select">
           {cities.map((city, i) => (
-            <button
+            <CityButton
               key={city.name}
-              onClick={() => this.setActiveCity(i)}
-              className={`city-select__city${
-                activeCity === i ? " active" : ""
-              }`}
-            >
-              {city.name}
-            </button>
+              city={city.name}
+              clickHandler={() => this.setActiveCity(i)}
+              active={activeCity === i}
+            />
           ))}
-          <button 
+          {/* This isn't to spec, but I wanted to be able check my local weather. Uses the geolocation API */}
+          {/* <button 
             onClick={() => {
               this.setActiveCity(-1) // setActive to -1 to denote going outside of cities list
             }}
@@ -153,7 +156,7 @@ class App extends React.Component {
             }`}
             >
             Current Location
-          </button>
+          </button> */}
         </div>
         <div className="weather">
           {isLoading && <div>loading...</div>}

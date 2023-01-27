@@ -1,24 +1,21 @@
-#root {
-  max-width: 1280px;
+.App {
+  max-width: 40rem;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.city-select {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  &__city {
-    &.active {
-      color: rgb(249, 150, 45);
-    }
-  }
-}
-
-.weather {
-  &__forecast {
+  
+  .city-select {
     display: flex;
     justify-content: center;
+    
+  }
+  
+  .weather {
+    text-align: center;
+    position: relative;
+    
+    &__forecast {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
   }
 }
