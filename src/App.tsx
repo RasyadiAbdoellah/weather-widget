@@ -86,7 +86,7 @@ class App extends React.Component {
 
     try {
       response = await fetch(
-        `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${key}`
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${key}`
       );
     } catch (error) {
       console.error(error);
