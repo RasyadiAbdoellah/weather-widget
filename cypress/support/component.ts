@@ -39,4 +39,4 @@ Cypress.Commands.add('mount', mount)
 // cy.mount(<MyComponent />)
 
 // import global styles
-import "../../src/index.less"
+import "../../src/main.less"
