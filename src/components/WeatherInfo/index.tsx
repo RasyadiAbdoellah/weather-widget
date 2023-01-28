@@ -27,6 +27,7 @@ const WeatherInfo = ({ weatherData, isForecast = false }: props) => {
       <img
         className="icon"
         src={iconMap[conditions.icon]}
+        alt={conditions.main}
       />
       <div className="temp">
         <p className="value">

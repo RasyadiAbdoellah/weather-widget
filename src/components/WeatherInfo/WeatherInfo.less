@@ -1,20 +1,27 @@
+@import "../../styles";
+
 .weather-info {
   flex-grow: 1;
+  padding: @spacing-lg 0;
+  animation: fadeIn 0.2s ease-in-out;
+
   .day {
-    font-size: 1.25rem;
+    font-size: @font-lg;
     font-weight: 300;
+    margin-top: 0;
   }
   .icon {
-    width: 3rem;
+    width: 5rem;
     aspect-ratio: 1;
+    filter: drop-shadow(@shadow);
   }
   .temp {
     p {
       margin: 0;
     }
     .value {
-      font-family: 'Teko', sans-serif;
-      font-size: 2rem;
+      font-family: @font-secondary;
+      font-size: @font-xl;
       line-height: 85%;
     }
 
@@ -24,6 +31,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
+    padding: @spacing-xl 0;
 
     .day {
       grid-column: span 2;
@@ -31,7 +39,7 @@
     }
     .icon {
       justify-self: end;
-      width: 6rem;
+      width: 8rem;
 
     }
     .temp {
@@ -43,8 +51,8 @@
       }
       .description {
         display: block;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 1.25rem;
+        font-family: @font-primary;
+        font-size: @font-lg;
       }
     }
   }

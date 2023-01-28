@@ -68,12 +68,12 @@ class App extends React.Component {
    * API returns the 5 day forecast in 3 hour intervals with the 1st element being the forecast at +3 hours.
    * 24/3 = 8 so the 8th element is +24 hours, the 16 element is +48 hours, etc.
    * We only need up to +96 hours or the 32nd element.
-   * 
+   *
    * NOTE: With how the API is designed, a request at 10PM will show the next day's 1AM forecast as the 1st element
    * This will cause the main WeatherInfo to display tomorrow's forecast instead of the current weather.
-   * There's another endpoint that returns a daily forecast, but unfortunately that endpoint isn't included in 
+   * There's another endpoint that returns a daily forecast, but unfortunately that endpoint isn't included in
    * the free tier. As a workaround, we could hit the current weather endpoint, but that'll add another layer of
-   * complexity that's frankly too time-consuming. For now, WeatherInfo will only show "Today" if the forecast and the 
+   * complexity that's frankly too time-consuming. For now, WeatherInfo will only show "Today" if the forecast and the
    * current day match.
    */
   fetchData = async (loc: null | { lat: number; lon: number } = null) => {
@@ -169,8 +169,14 @@ class App extends React.Component {
           </button> */}
         </div>
         <div className="weather">
-          {isLoading && <div>loading...</div>}
-          {!isLoading && error && <div>{error}</div>}
+          {isLoading && (
+            <div className="loading" aria-label="loading icon">
+              <div className="loading-inner">
+                <div></div>
+              </div>
+            </div>
+          )}
+          {!isLoading && error && <div className="error">{error}</div>}
           {valid && (
             <>
               <WeatherInfo weatherData={data.current} />
